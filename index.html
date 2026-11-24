@@ -54,7 +54,8 @@ footer{text-align:center;color:#d9cfb8;font-size:.8rem;padding:18px}.tiny{font-s
     </div>
     <div class="actions" id="adminActions">
       <button class="secondary" id="generate">① 產生 20 組專屬連結</button>
-      <button class="primary" id="draw">② 截止許願並自動抽籤</button>
+      <button class="danger" id="closeWishes">② 主辦人手動截止許願</button>
+      <button class="primary" id="draw">③ 截止後開始抽籤</button>
       <button class="light" id="refresh">更新狀態</button>
     </div>
     <div class="notice" id="adminNote">先產生 20 組測試連結，再逐一開啟連結提交願望。所有人都完成後，主辦人可按下截止並抽籤。</div>
@@ -107,7 +108,7 @@ const read=()=>{try{return JSON.parse(localStorage.getItem(KEY))||null}catch{ret
 const write=d=>localStorage.setItem(KEY,JSON.stringify(d));
 let currentToken=new URLSearchParams(location.search).get("token");
 function show(id){["home","admin","participant","help"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
-function statusText(d){return !d?"準備中":d.drawn?"已抽籤":"許願中"}
+function statusText(d){return !d?"準備中":d.drawn?"已抽籤":d.closed?"已截止":"許願中"}
 function refresh(){
  const d=read(), people=d?.people||[], done=people.filter(p=>p.wish).length;
  $("total").textContent=people.length||20;$("submitted").textContent=done;$("phase").textContent=statusText(d);
@@ -115,9 +116,12 @@ function refresh(){
  $("progressText").textContent=people.length?`已完成 ${done} / ${people.length} 人`:"尚未建立測試參加連結。";
  $("aTotal").textContent=people.length;$("aSubmitted").textContent=done;$("aDrawn").textContent=d?.drawn?"是":"否";
  $("generate").disabled=!!people.length;$("generate").style.opacity=people.length?".45":"1";
- $("draw").disabled=!people.length||done!==people.length||!!d?.drawn;
+ $("closeWishes").disabled=!people.length||done!==people.length||!!d?.closed||!!d?.drawn;
+ $("closeWishes").style.opacity=$("closeWishes").disabled?".45":"1";
+ $("closeWishes").textContent=d?.closed?"許願已截止":"② 主辦人手動截止許願";
+ $("draw").disabled=!people.length||!d?.closed||!!d?.drawn;
  $("draw").style.opacity=$("draw").disabled?".45":"1";
- $("adminNote").textContent=!people.length?"請先產生 20 組連結。":d.drawn?"抽籤已完成。參加者可用自己的連結查看結果。":`目前 ${done}/${people.length} 人已提交願望。所有人完成後才能抽籤。`;
+ $("adminNote").textContent=!people.length?"請先產生 20 組連結。":d.drawn?"抽籤已完成。參加者可用自己的連結查看結果。":d.closed?"許願已截止，請確認後按「開始抽籤」。":`目前 ${done}/${people.length} 人已提交願望。全部完成後，主辦人可手動截止。`;
  $("links").innerHTML="";
  people.forEach(p=>{
   const row=document.createElement("div");row.className="linkrow";
@@ -133,11 +137,11 @@ function openParticipant(token){
  const d=read(),p=d?.people.find(x=>x.token===token);
  if(!p){show("home");alert("找不到這組測試連結。請先由主辦人產生連結。");return}
  currentToken=token;show("participant");$("participantNo").textContent="參加編號 "+String(p.no).padStart(2,"0");
- $("wishForm").classList.toggle("hidden",!!d.drawn||!!p.wish);$("wishSaved").classList.toggle("hidden",!!d.drawn||!p.wish);$("result").classList.toggle("hidden",!d.drawn);
+ $("wishForm").classList.toggle("hidden",!!d.drawn||!!d.closed||!!p.wish);$("wishSaved").classList.toggle("hidden",!!d.drawn||!!d.closed||!p.wish);$("result").classList.toggle("hidden",!d.drawn);
  $("wish").value=p.wish?.content||"";$("phonetic").value=p.wish?.phonetic||"";$("hint").value=p.wish?.hint||"";
  if(p.wish){$("savedWish").textContent=p.wish.content;$("savedPhonetic").textContent=p.wish.phonetic?"注音："+p.wish.phonetic:"";$("savedHint").textContent=p.wish.hint?"提示："+p.wish.hint:""}
  if(d.drawn){const target=d.people.find(x=>x.token===p.targetToken);const w=target?.wish;$("resultWish").textContent=w?.content||"（願望資料不存在）";$("resultPhonetic").textContent=w?.phonetic?"注音："+w.phonetic:"";$("resultHint").textContent=w?.hint?"提示："+w.hint:""}
- $("participantStatus").textContent=d.drawn?"抽籤已完成。這是你的專屬結果，可以再次開啟本連結查看。":p.wish?"願望已儲存；截止抽籤前仍可修改。":"請填寫願望並儲存。";
+ $("participantStatus").textContent=d.drawn?"抽籤已完成。這是你的專屬結果，可以再次開啟本連結查看。":d.closed?"許願已截止，正在等待主辦人開始抽籤。":p.wish?"願望已儲存；主辦人截止前仍可修改。":"請填寫願望並儲存。";
 }
 $("goAdmin").onclick=()=>{show("admin");refresh()};
 $("how").onclick=()=>show("help");$("helpBack").onclick=()=>show("home");$("backHome").onclick=()=>show("home");
@@ -148,15 +152,24 @@ $("generate").onclick=()=>{
  write({people,drawn:false,createdAt:new Date().toISOString()});refresh();
 };
 $("refresh").onclick=refresh;
+$("closeWishes").onclick=()=>{
+ const d=read();if(!d||d.drawn||d.closed)return;
+ const done=d.people.filter(p=>p.wish).length;
+ if(done!==d.people.length){alert(`目前只有 ${done}/${d.people.length} 人完成願望。請等所有人提交後再截止。`);return}
+ if(!confirm("確定手動截止許願？截止後所有人都不能再修改願望。"))return;
+ d.closed=true;d.closedAt=new Date().toISOString();write(d);refresh();
+ alert("許願已截止！接著可以按「開始抽籤」。");
+};
 $("saveWish").onclick=()=>{
  const d=read(),p=d?.people.find(x=>x.token===currentToken);if(!p)return;
  const content=$("wish").value.trim();if(!content){alert("請先填寫願望內容。");return}
- if(d.drawn){alert("活動已截止，不能修改願望。");return}
+ if(d.drawn||d.closed){alert("活動已截止，不能修改願望。");return}
  p.wish={content,phonetic:$("phonetic").value.trim(),hint:$("hint").value.trim()};write(d);openParticipant(currentToken);refresh();
 };
 $("editWish").onclick=()=>{$("wishForm").classList.remove("hidden");$("wishSaved").classList.add("hidden")};
 $("draw").onclick=()=>{
  const d=read();if(!d||d.drawn)return;
+ if(!d.closed){alert("請先由主辦人手動截止許願，再開始抽籤。");return}
  if(d.people.some(p=>!p.wish)){alert("還有人尚未提交願望，暫時不能抽籤。");return}
  const n=d.people.length;let perm;
  do{perm=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[perm[i],perm[j]]=[perm[j],perm[i]]}}while(perm.some((v,i)=>v===i));
