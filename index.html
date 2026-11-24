@@ -28,7 +28,7 @@ footer{text-align:center;color:#d9cfb8;font-size:.8rem;padding:18px}.tiny{font-s
     <div class="ornament">🎄 🎁 ✨</div>
     <div class="eyebrow">MERRY CHRISTMAS 2026</div>
     <h1>讓願望成為驚喜</h1>
-    <p>匿名留下注音線索與方向提示，等活動結束後，抽出一份神祕線索。</p>
+    <p>匿名留下「注音縮寫線索」與方向提示，等活動結束後，抽出一份神祕線索。</p>
   </section>
 
   <section id="home" class="panel">
@@ -67,10 +67,10 @@ footer{text-align:center;color:#d9cfb8;font-size:.8rem;padding:18px}.tiny{font-s
   <section id="participant" class="panel hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>🎁 我的專屬線索頁</h2><span class="pill" id="participantNo">參加者</span></div>
     <div id="wishForm">
-      <p class="muted">不需要寫出禮物名稱，只留下注音線索與方向提示。其他參加者不會在頁面上看到你的身分。</p>
-      <label class="field" for="phonetic">注音線索 *</label><input id="phonetic" maxlength="40" placeholder="例如：ㄅㄨㄟ ㄅㄟ">
+      <p class="muted">不需要寫出禮物名稱，只留下注音縮寫線索與方向提示。其他參加者不會在頁面上看到你的身分。</p>
+      <label class="field" for="phonetic">注音縮寫線索 *</label><input id="phonetic" maxlength="40" placeholder="例如：杯子＝ㄅㄗ"><p class="muted tiny">請輸入禮物名稱每個字的第一個注音符號，例如：杯子＝ㄅㄗ、手機＝ㄕㄐ。</p>
       <label class="field" for="hint">方向提示 *</label><textarea id="hint" maxlength="180" placeholder="例如：生活用品、冬天常用、可以放在房間"></textarea>
-      <div class="notice">💡 請提供注音線索與方向提示，讓抽到的人可以根據線索猜禮物。</div>
+      <div class="notice">💡 注音只需輸入每個字的第一個注音符號，不用輸入完整注音；再搭配方向提示，讓抽到的人猜猜看。</div>
       <button class="primary full" id="saveWish">儲存我的願望</button>
     </div>
     <div id="wishSaved" class="hidden">
@@ -91,7 +91,7 @@ footer{text-align:center;color:#d9cfb8;font-size:.8rem;padding:18px}.tiny{font-s
     <ol class="muted" style="line-height:1.9;padding-left:22px">
       <li>主辦人先產生 20 組專屬連結。</li>
       <li>把不同連結分別傳給參加者。</li>
-      <li>每人開啟自己的連結，填寫注音線索及方向提示。</li>
+      <li>每人開啟自己的連結，填寫注音縮寫線索及方向提示（例如：杯子＝ㄅㄗ）。</li>
       <li>主辦人確認大家都完成後，按下「截止許願並自動抽籤」。</li>
       <li>每人保留自己的專屬連結；抽籤完成後，重新開啟同一網址，就能看到自己的結果。</li>
     </ol>
@@ -138,9 +138,9 @@ function openParticipant(token){
  currentToken=token;show("participant");$("participantNo").textContent="參加編號 "+String(p.no).padStart(2,"0");$("participantHome").classList.add("hidden");
  $("wishForm").classList.toggle("hidden",!!d.drawn||!!d.closed||!!p.wish);$("wishSaved").classList.toggle("hidden",!!d.drawn||!!d.closed||!p.wish);$("result").classList.toggle("hidden",!d.drawn);
  $("phonetic").value=p.wish?.phonetic||"";$("hint").value=p.wish?.hint||"";
- if(p.wish){$("savedPhonetic").textContent=p.wish.phonetic?"注音線索："+p.wish.phonetic:"";$("savedHint").textContent=p.wish.hint?"方向提示："+p.wish.hint:""}
- if(d.drawn){const target=d.people.find(x=>x.token===p.targetToken);const w=target?.wish;$("resultPhonetic").textContent=w?.phonetic?"注音線索："+w.phonetic:"";$("resultHint").textContent=w?.hint?"方向提示："+w.hint:""}
- $("participantStatus").textContent=d.drawn?(p.targetToken?"抽籤已完成！這是你的專屬結果。請保留此網址，日後再次開啟仍可查看。":"你沒有提交願望，因此未參加本次抽籤。"):(d.closed?"許願已截止，正在等待主辦人開始抽籤。":p.wish?"完成！你的線索已送出。請保留這組專屬網址；抽籤完成後，再開啟同一網址即可查看結果。主辦人截止前仍可透過本連結修改。":"請填寫注音線索與方向提示並儲存。");
+ if(p.wish){$("savedPhonetic").textContent=p.wish.phonetic?"注音縮寫："+p.wish.phonetic:"";$("savedHint").textContent=p.wish.hint?"方向提示："+p.wish.hint:""}
+ if(d.drawn){const target=d.people.find(x=>x.token===p.targetToken);const w=target?.wish;$("resultPhonetic").textContent=w?.phonetic?"注音縮寫："+w.phonetic:"";$("resultHint").textContent=w?.hint?"方向提示："+w.hint:""}
+ $("participantStatus").textContent=d.drawn?(p.targetToken?"抽籤已完成！這是你的專屬結果。請保留此網址，日後再次開啟仍可查看。":"你沒有提交願望，因此未參加本次抽籤。"):(d.closed?"許願已截止，正在等待主辦人開始抽籤。":p.wish?"完成！你的線索已送出。請保留這組專屬網址；抽籤完成後，再開啟同一網址即可查看結果。主辦人截止前仍可透過本連結修改。":"請填寫注音縮寫線索與方向提示並儲存。");
 }
 $("goAdmin").onclick=()=>{show("admin");refresh()};
 $("how").onclick=()=>show("help");$("helpBack").onclick=()=>show("home");$("backHome").onclick=()=>show("home");
