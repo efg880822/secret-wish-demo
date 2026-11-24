@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173b32">
+<title>Secret Wish｜聖誕匿名願望籤筒（測試版）</title>
+<style>
+:root{--green:#173b32;--green2:#245344;--cream:#fff8e9;--gold:#d9b66e;--red:#a83d35;--ink:#24332d;--muted:#718078;--line:#e9e2d4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#2c6650 0,#173b32 48%,#102b25 100%);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:13px;padding:13px 17px;font-weight:750}
+.top{max-width:980px;margin:auto;padding:22px 18px 8px;display:flex;justify-content:space-between;align-items:center;color:#fff8e9}.brand{font-weight:900;letter-spacing:.08em}.top small{color:#e3d3ad}
+.wrap{max-width:980px;margin:0 auto;padding:14px 18px 52px}.hero{text-align:center;color:var(--cream);padding:34px 12px 28px}.eyebrow{color:var(--gold);letter-spacing:.28em;font-size:.75rem;font-weight:800}.hero h1{font-size:clamp(2.1rem,7vw,4rem);margin:10px 0 5px;line-height:1.1}.hero p{color:#e8deca;margin:12px auto 0;max-width:560px;line-height:1.8}.ornament{font-size:2.2rem;margin-bottom:8px}
+.panel{background:var(--cream);border:1px solid #eadfc8;border-radius:24px;padding:clamp(18px,4vw,30px);box-shadow:0 18px 45px #071b1680;margin:0 auto 18px;max-width:760px}.panel h2{margin:0 0 8px;color:var(--green);font-size:1.35rem}.muted{color:var(--muted);line-height:1.65}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.stat{background:#f1eadb;border-radius:15px;padding:15px;text-align:center}.stat strong{display:block;font-size:1.7rem;color:var(--green)}.stat span{font-size:.82rem;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.primary{background:var(--red);color:white}.secondary{background:var(--green);color:white}.light{background:#eee5d3;color:var(--green)}.danger{background:#f6dfdc;color:#8c302b}.full{width:100%}
+.field{display:block;margin:16px 0 6px;font-weight:750;color:var(--green)}input,textarea{width:100%;border:1px solid #d9d0bf;background:#fffdf8;border-radius:12px;padding:13px;color:var(--ink);outline:none}input:focus,textarea:focus{border-color:#8b9e83;box-shadow:0 0 0 3px #8b9e8325}textarea{min-height:88px;resize:vertical}
+.notice{background:#f1eadb;border-radius:13px;padding:12px 14px;color:#5f6b61;font-size:.9rem;line-height:1.6;margin:14px 0}.hidden{display:none!important}.pill{display:inline-block;background:#e7eddf;color:#426147;border-radius:99px;padding:5px 10px;font-size:.78rem;font-weight:800}.wish-card{background:#f1eadb;border:1px dashed #c8b98f;border-radius:18px;padding:22px;text-align:center;margin:18px 0}.wish-card .wish{font-size:2rem;font-weight:900;color:var(--green);margin:8px}.wish-card .hint{color:#657369;margin:8px 0}
+.linkrow{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.linkrow:last-child{border:0}.linkrow .num{font-weight:850;color:var(--green);width:34px}.linkrow input{font-size:.78rem;padding:9px;min-width:0}.linkrow button{padding:9px 11px;white-space:nowrap}
+.progress{height:9px;background:#e7dfd0;border-radius:99px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:#62815e;width:0}
+footer{text-align:center;color:#d9cfb8;font-size:.8rem;padding:18px}.tiny{font-size:.78rem}.warning{color:#8e3932;font-weight:700}
+@media(max-width:560px){.stats{gap:7px}.stat{padding:12px 5px}.stat strong{font-size:1.4rem}.actions button{width:100%}.linkrow{flex-wrap:wrap}.linkrow input{flex:1 1 100%;order:3}.linkrow button{margin-left:auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">✦ SECRET WISH</div><small>聖誕匿名願望籤筒・測試版</small></header>
+<main class="wrap">
+  <section class="hero">
+    <div class="ornament">🎄 🎁 ✨</div>
+    <div class="eyebrow">MERRY CHRISTMAS 2026</div>
+    <h1>讓願望成為驚喜</h1>
+    <p>匿名寫下想收到的禮物，等活動結束後，抽出一份神祕願望。</p>
+  </section>
+
+  <section id="home" class="panel">
+    <h2>活動大廳</h2><p class="muted">這是獨立試玩版。可在同一台裝置、同一個瀏覽器中，用不同專屬連結模擬多人參加。</p>
+    <div class="stats">
+      <div class="stat"><strong id="total">20</strong><span>參加名額</span></div>
+      <div class="stat"><strong id="submitted">0</strong><span>已提交願望</span></div>
+      <div class="stat"><strong id="phase">準備中</strong><span>活動狀態</span></div>
+    </div>
+    <div class="progress"><span id="progress"></span></div>
+    <p class="muted tiny" id="progressText">尚未建立測試參加連結。</p>
+    <div class="actions"><button class="primary" id="goAdmin">主辦人管理（測試）</button><button class="light" id="how">玩法說明</button></div>
+    <div class="notice">🔒 試玩版資料只存在目前瀏覽器的 localStorage。清除瀏覽器資料或換裝置不會同步；正式版才會接上 Supabase。</div>
+  </section>
+
+  <section id="admin" class="panel hidden">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><h2>🎅 主辦人管理中心</h2><span class="pill">DEMO</span></div>
+    <p class="muted">管理參加名額與活動流程。此測試版不連接正式資料庫。</p>
+    <div class="stats">
+      <div class="stat"><strong id="aTotal">0</strong><span>已建立連結</span></div>
+      <div class="stat"><strong id="aSubmitted">0</strong><span>已許願</span></div>
+      <div class="stat"><strong id="aDrawn">否</strong><span>已抽籤</span></div>
+    </div>
+    <div class="actions" id="adminActions">
+      <button class="secondary" id="generate">① 產生 20 組專屬連結</button>
+      <button class="primary" id="draw">② 截止許願並自動抽籤</button>
+      <button class="light" id="refresh">更新狀態</button>
+    </div>
+    <div class="notice" id="adminNote">先產生 20 組測試連結，再逐一開啟連結提交願望。所有人都完成後，主辦人可按下截止並抽籤。</div>
+    <div id="links"></div>
+    <div class="actions"><button class="danger" id="reset">重設整個試玩活動</button><button class="light" id="backHome">返回首頁</button></div>
+    <p class="tiny warning">注意：試玩版主辦人面板只用於驗收流程，不能當成正式版的安全管理介面。</p>
+  </section>
+
+  <section id="participant" class="panel hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>🎁 我的專屬願望頁</h2><span class="pill" id="participantNo">參加者</span></div>
+    <div id="wishForm">
+      <p class="muted">寫下你希望收到的禮物。其他參加者不會在頁面上看到你的身分。</p>
+      <label class="field" for="wish">願望內容 *</label><input id="wish" maxlength="80" placeholder="例如：衛生紙、保溫杯、桌上小夜燈">
+      <label class="field" for="phonetic">注音線索</label><input id="phonetic" maxlength="40" placeholder="例如：ㄨㄕㄓ">
+      <label class="field" for="hint">方向提示</label><textarea id="hint" maxlength="180" placeholder="例如：生活用品、每天都用得到"></textarea>
+      <div class="notice">💡 線索可以幫助抽到願望的人猜禮物，不必把答案描述得太明顯。</div>
+      <button class="primary full" id="saveWish">儲存我的願望</button>
+    </div>
+    <div id="wishSaved" class="hidden">
+      <span class="pill">已提交</span><h3>你的願望已經收進籤筒！</h3><div class="wish-card"><div class="wish" id="savedWish"></div><div id="savedPhonetic" class="hint"></div><div id="savedHint" class="hint"></div></div>
+      <button class="light full" id="editWish">修改我的願望</button>
+    </div>
+    <div id="result" class="hidden">
+      <span class="pill">神祕任務已揭曉</span><h2 style="margin-top:14px">🎉 你抽到的願望</h2>
+      <div class="wish-card"><div class="wish" id="resultWish"></div><div id="resultPhonetic" class="hint"></div><div id="resultHint" class="hint"></div></div>
+      <p class="muted tiny">請保留驚喜，不要公開抽到的願望或猜測對象。</p>
+    </div>
+    <div id="participantStatus" class="notice"></div>
+    <div class="actions"><button class="light" id="participantHome">回活動首頁</button></div>
+  </section>
+
+  <section id="help" class="panel hidden">
+    <h2>玩法說明</h2>
+    <ol class="muted" style="line-height:1.9;padding-left:22px">
+      <li>主辦人先產生 20 組專屬連結。</li>
+      <li>把不同連結分別傳給參加者。</li>
+      <li>每人開啟自己的連結，填寫願望、注音及方向提示。</li>
+      <li>主辦人確認大家都完成後，按下「截止許願並自動抽籤」。</li>
+      <li>每人重新開啟自己的專屬連結，就能看到抽到的願望。</li>
+    </ol>
+    <div class="notice">試玩時請在同一個瀏覽器開啟不同連結，以模擬多人。這只是前端展示，不具備跨裝置同步與正式安全性。</div>
+    <button class="light full" id="helpBack">返回</button>
+  </section>
+</main>
+<footer>Made with Christmas Magic ✨ · Secret Wish Demo</footer>
+<script>
+const KEY="secretWishDemo_v1";
+const $=id=>document.getElementById(id);
+const read=()=>{try{return JSON.parse(localStorage.getItem(KEY))||null}catch{return null}};
+const write=d=>localStorage.setItem(KEY,JSON.stringify(d));
+let currentToken=new URLSearchParams(location.search).get("token");
+function show(id){["home","admin","participant","help"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function statusText(d){return !d?"準備中":d.drawn?"已抽籤":"許願中"}
+function refresh(){
+ const d=read(), people=d?.people||[], done=people.filter(p=>p.wish).length;
+ $("total").textContent=people.length||20;$("submitted").textContent=done;$("phase").textContent=statusText(d);
+ $("progress").style.width=(people.length?done/people.length*100:0)+"%";
+ $("progressText").textContent=people.length?`已完成 ${done} / ${people.length} 人`:"尚未建立測試參加連結。";
+ $("aTotal").textContent=people.length;$("aSubmitted").textContent=done;$("aDrawn").textContent=d?.drawn?"是":"否";
+ $("generate").disabled=!!people.length;$("generate").style.opacity=people.length?".45":"1";
+ $("draw").disabled=!people.length||done!==people.length||!!d?.drawn;
+ $("draw").style.opacity=$("draw").disabled?".45":"1";
+ $("adminNote").textContent=!people.length?"請先產生 20 組連結。":d.drawn?"抽籤已完成。參加者可用自己的連結查看結果。":`目前 ${done}/${people.length} 人已提交願望。所有人完成後才能抽籤。`;
+ $("links").innerHTML="";
+ people.forEach(p=>{
+  const row=document.createElement("div");row.className="linkrow";
+  const num=document.createElement("span");num.className="num";num.textContent=String(p.no).padStart(2,"0");
+  const inp=document.createElement("input");inp.readOnly=true;inp.value=location.origin+location.pathname+"?token="+p.token;inp.setAttribute("aria-label","參加者"+p.no+"專屬連結");
+  const state=document.createElement("span");state.className="pill";state.textContent=p.wish?"已許願":"未許願";
+  const btn=document.createElement("button");btn.className="light";btn.textContent="複製";btn.onclick=()=>copyText(inp.value,btn);
+  row.append(num,state,btn,inp);$("links").append(row);
+ });
+}
+async function copyText(text,btn){try{await navigator.clipboard.writeText(text);btn.textContent="已複製";setTimeout(()=>btn.textContent="複製",1300)}catch{prompt("請複製這組連結：",text)}}
+function openParticipant(token){
+ const d=read(),p=d?.people.find(x=>x.token===token);
+ if(!p){show("home");alert("找不到這組測試連結。請先由主辦人產生連結。");return}
+ currentToken=token;show("participant");$("participantNo").textContent="參加編號 "+String(p.no).padStart(2,"0");
+ $("wishForm").classList.toggle("hidden",!!d.drawn||!!p.wish);$("wishSaved").classList.toggle("hidden",!!d.drawn||!p.wish);$("result").classList.toggle("hidden",!d.drawn);
+ $("wish").value=p.wish?.content||"";$("phonetic").value=p.wish?.phonetic||"";$("hint").value=p.wish?.hint||"";
+ if(p.wish){$("savedWish").textContent=p.wish.content;$("savedPhonetic").textContent=p.wish.phonetic?"注音："+p.wish.phonetic:"";$("savedHint").textContent=p.wish.hint?"提示："+p.wish.hint:""}
+ if(d.drawn){const target=d.people.find(x=>x.token===p.targetToken);const w=target?.wish;$("resultWish").textContent=w?.content||"（願望資料不存在）";$("resultPhonetic").textContent=w?.phonetic?"注音："+w.phonetic:"";$("resultHint").textContent=w?.hint?"提示："+w.hint:""}
+ $("participantStatus").textContent=d.drawn?"抽籤已完成。這是你的專屬結果，可以再次開啟本連結查看。":p.wish?"願望已儲存；截止抽籤前仍可修改。":"請填寫願望並儲存。";
+}
+$("goAdmin").onclick=()=>{show("admin");refresh()};
+$("how").onclick=()=>show("help");$("helpBack").onclick=()=>show("home");$("backHome").onclick=()=>show("home");
+$("participantHome").onclick=()=>{history.replaceState(null,"",location.pathname);currentToken=null;show("home");refresh()};
+$("generate").onclick=()=>{
+ if(read()?.people?.length)return;
+ const people=Array.from({length:20},(_,i)=>({no:i+1,token:Array.from(crypto.getRandomValues(new Uint8Array(18)),b=>b.toString(16).padStart(2,"0")).join(""),wish:null,targetToken:null}));
+ write({people,drawn:false,createdAt:new Date().toISOString()});refresh();
+};
+$("refresh").onclick=refresh;
+$("saveWish").onclick=()=>{
+ const d=read(),p=d?.people.find(x=>x.token===currentToken);if(!p)return;
+ const content=$("wish").value.trim();if(!content){alert("請先填寫願望內容。");return}
+ if(d.drawn){alert("活動已截止，不能修改願望。");return}
+ p.wish={content,phonetic:$("phonetic").value.trim(),hint:$("hint").value.trim()};write(d);openParticipant(currentToken);refresh();
+};
+$("editWish").onclick=()=>{$("wishForm").classList.remove("hidden");$("wishSaved").classList.add("hidden")};
+$("draw").onclick=()=>{
+ const d=read();if(!d||d.drawn)return;
+ if(d.people.some(p=>!p.wish)){alert("還有人尚未提交願望，暫時不能抽籤。");return}
+ const n=d.people.length;let perm;
+ do{perm=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[perm[i],perm[j]]=[perm[j],perm[i]]}}while(perm.some((v,i)=>v===i));
+ d.people.forEach((p,i)=>p.targetToken=d.people[perm[i]].token);
+ d.drawn=true;d.drawnAt=new Date().toISOString();write(d);refresh();alert("抽籤完成！每個人都會抽到不同人的願望。");
+};
+$("reset").onclick=()=>{if(confirm("確定清除這個瀏覽器中的全部試玩資料？此操作無法復原。")){localStorage.removeItem(KEY);refresh();}};
+if(currentToken)openParticipant(currentToken);else{show("home");refresh()}
+</script>
+</body>
+</html>
